@@ -1,9 +1,12 @@
 package app
 
 import (
-	"factory/in_progress/app/auth"
 	"factory/in_progress/app/handler"
+	"factory/in_progress/app/handler/auth"
+	"factory/in_progress/app/handler/diary"
 	"factory/in_progress/app/handler/user"
+	"factory/in_progress/app/middleware"
+	authorization "factory/in_progress/app/middleware/auth"
 	"factory/in_progress/app/model"
 	"factory/in_progress/config"
 	"fmt"
@@ -46,19 +49,29 @@ func (a *App) Initialize(config *config.Config) {
 
 // Handlers sets the all required routers
 func (a *App) Handlers() {
+	jwt := authorization.NewJWT(os.Getenv("SUPER_KEY"))
 
-	// routing for users
-	u := a.Router.PathPrefix("/user").Subrouter()
-	// user route can use only authorized users
-	u.Use(auth.NewJWT(os.Getenv("SUPER_KEY")).Middleware)
-	a.Register(u, user.New(a.DB))
+	a.Register(
+		a.Router.PathPrefix("/auth").Subrouter(),
+		auth.New(a.DB, jwt),
+	)
 
-	// routing for guests
-	// g := a.Router.PathPrefix("/guest").Subrouter()
+	a.Register(
+		a.Router.PathPrefix("/user").Subrouter(),
+		user.New(a.DB), jwt,
+	)
+
+	a.Register(
+		a.Router.PathPrefix("/diary").Subrouter(),
+		diary.New(a.DB), jwt,
+	)
 }
 
 // Register add subrouter
-func (a *App) Register(r *mux.Router, s handler.Subroute) {
+func (a *App) Register(r *mux.Router, s handler.Subroute, m ...middleware.Middleware) {
+	for _, mid := range m {
+		r.Use(mid.Middleware)
+	}
 	s.Register(r)
 	// create links
 	a.Routes = append(a.Routes, s)
