@@ -1,4 +1,4 @@
-package handler
+package diary
 
 import (
 	"encoding/json"

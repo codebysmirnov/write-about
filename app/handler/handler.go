@@ -5,10 +5,16 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httputil"
+
+	"github.com/gorilla/mux"
 )
 
-// responseJSON makes json response
-func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
+type Subroute interface {
+	Register(*mux.Router)
+}
+
+// ResponseJSON makes json response
+func ResponseJSON(w http.ResponseWriter, status int, payload interface{}) {
 	response, err := json.Marshal(payload)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -20,13 +26,13 @@ func responseJSON(w http.ResponseWriter, status int, payload interface{}) {
 	w.Write([]byte(response))
 }
 
-// respondError makes error json format
-func respondError(w http.ResponseWriter, code int, message string) {
-	responseJSON(w, code, map[string]string{"error": message})
+// RespondError makes error json format
+func RespondError(w http.ResponseWriter, code int, message string) {
+	ResponseJSON(w, code, map[string]string{"error": message})
 }
 
-// rDumper show all information about request
-func rDumper(r *http.Request) {
+// Rdumper show all information about request
+func Rdumper(r *http.Request) {
 	requestDump, err := httputil.DumpRequest(r, true)
 	if err != nil {
 		fmt.Println(err)

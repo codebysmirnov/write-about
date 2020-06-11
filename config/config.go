@@ -25,9 +25,9 @@ func GetConfig() *Config {
 			Dialect:  getEnv("DIALECT", "postgres"),
 			Host:     getEnv("HOST", "127.0.0.1"),
 			Port:     getEnv("PORT", "5432"),
-			Username: getEnv("DB_USER", "user_note"),
-			Password: getEnv("DB_PASSWORD", "secret"),
-			Name:     getEnv("DB_NAME", "note"),
+			Username: getEnv("DB_USER", "smirnov"),
+			Password: getEnv("DB_PASSWORD", "baikal"),
+			Name:     getEnv("DB_NAME", "api"),
 		},
 	}
 }
