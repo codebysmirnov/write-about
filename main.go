@@ -1,17 +1,17 @@
 package main
 
 import (
-	"factory/in_progress/app"
-	"factory/in_progress/config"
+	"github.com/codebysmirnov/write-about/app"
+	"github.com/codebysmirnov/write-about/config"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func main() {
-	config := config.GetConfig()
+	conf := config.GetConfig()
 
-	app := &app.App{}
-	app.Initialize(config)
+	a := &app.App{}
+	a.Initialize(conf)
 
-	app.Run(":3000")
+	a.Run(":3000")
 }

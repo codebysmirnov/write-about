@@ -1,15 +1,15 @@
 package app
 
 import (
-	"factory/in_progress/app/handler"
-	"factory/in_progress/app/handler/auth"
-	"factory/in_progress/app/handler/diary"
-	"factory/in_progress/app/handler/user"
-	"factory/in_progress/app/middleware"
-	authorization "factory/in_progress/app/middleware/auth"
-	"factory/in_progress/app/model"
-	"factory/in_progress/config"
 	"fmt"
+	"github.com/codebysmirnov/write-about/app/handler"
+	"github.com/codebysmirnov/write-about/app/handler/auth"
+	"github.com/codebysmirnov/write-about/app/handler/diary"
+	"github.com/codebysmirnov/write-about/app/handler/user"
+	"github.com/codebysmirnov/write-about/app/middleware"
+	authorization "github.com/codebysmirnov/write-about/app/middleware/auth"
+	"github.com/codebysmirnov/write-about/app/model"
+	"github.com/codebysmirnov/write-about/config"
 	"log"
 	"net/http"
 	"os"
@@ -87,7 +87,7 @@ func (a *App) Run(host string) {
 		ExposedHeaders: []string{""},
 	})
 
-	handler := c.Handler(a.Router)
+	h := c.Handler(a.Router)
 
-	log.Fatal(http.ListenAndServe(host, handler))
+	log.Fatal(http.ListenAndServe(host, h))
 }

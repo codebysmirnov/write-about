@@ -1,8 +1,8 @@
 package user
 
 import (
-	"factory/in_progress/app/model"
-	"factory/in_progress/app/utils"
+	"github.com/codebysmirnov/write-about/app/model"
+	"github.com/codebysmirnov/write-about/app/utils"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"net/http"
