@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/codebysmirnov/write-about/app/utils"
 	"net/http"
 	"time"
@@ -25,13 +24,14 @@ func NewJWT(key string) *JWT {
 }
 
 // Middleware check user auth
+// TODO: Brake this method to validate() and middleware()
 func (j *JWT) Middleware(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if val, ok := r.Header["Token"]; ok {
 			claims := jwt.MapClaims{}
 			token, err := jwt.ParseWithClaims(val[0], claims, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, fmt.Errorf("There was an arror")
+					return nil, errors.New("error token decryption")
 				}
 				return j.signingKey, nil
 			})
@@ -55,6 +55,7 @@ func (j *JWT) Validate(token string) (bool, error) {
 }
 
 // Generate token for user auth
+// TODO: Fix pars params
 func (j *JWT) Generate(args ...interface{}) (string, error) {
 	params := map[string]interface{}{}
 	for _, arg := range args {

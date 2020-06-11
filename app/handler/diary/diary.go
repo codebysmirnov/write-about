@@ -11,6 +11,7 @@ import (
 )
 
 // getUserOr404 check diary in db
+// TODO: Delete this method, and use ctx for get diary
 func getDiaryOr404(db *gorm.DB, userID int, year int, w http.ResponseWriter, r *http.Request) *model.Diary {
 	diary := model.Diary{}
 	if err := db.First(&diary, userID, year).Error; err != nil {

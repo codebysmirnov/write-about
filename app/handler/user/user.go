@@ -10,6 +10,7 @@ import (
 )
 
 // getUserOr404 check user in db
+// TODO: Delete this method, and use ctx for get user
 func getUserOr404(db *gorm.DB, id int, w http.ResponseWriter, r *http.Request) *model.User {
 	user := model.User{}
 	if err := db.First(&user, id).Error; err != nil {
