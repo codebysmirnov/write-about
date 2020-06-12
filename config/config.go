@@ -2,12 +2,13 @@ package config
 
 import "os"
 
-// Config stucture
+// Config structure
 type Config struct {
-	DB *DBConfig
+	DB      *DBConfig
+	LogPath string
 }
 
-// DBConfig contain main fields for connet to DB
+// DBConfig contain main fields for connect to DB
 type DBConfig struct {
 	Dialect  string
 	Host     string
@@ -29,6 +30,7 @@ func GetConfig() *Config {
 			Password: getEnv("DB_PASSWORD", "baikal"),
 			Name:     getEnv("DB_NAME", "api"),
 		},
+		LogPath: getEnv("LOG_PATH", "app.log"),
 	}
 }
 

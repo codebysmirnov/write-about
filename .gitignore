@@ -5,8 +5,5 @@
 *.dylib
 *.test
 *.out
-.idea/.gitignore
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/write-about.iml
+*.log
+.idea

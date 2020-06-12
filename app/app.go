@@ -1,7 +1,9 @@
 package app
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/Delisa-sama/logger"
 	"github.com/codebysmirnov/write-about/app/handler"
 	"github.com/codebysmirnov/write-about/app/handler/auth"
 	"github.com/codebysmirnov/write-about/app/handler/diary"
@@ -10,7 +12,6 @@ import (
 	authorization "github.com/codebysmirnov/write-about/app/middleware/auth"
 	"github.com/codebysmirnov/write-about/app/model"
 	"github.com/codebysmirnov/write-about/config"
-	"log"
 	"net/http"
 	"os"
 
@@ -28,6 +29,20 @@ type App struct {
 
 // Initialize the app
 func (a *App) Initialize(config *config.Config) {
+	logFile, err := os.OpenFile(config.LogPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		panic("Failed to open log file to write")
+	}
+	defer logFile.Close()
+
+	logger.Init(
+		logger.Output(logFile),
+		logger.Level(logger.INFO),
+	)
+
+	cfgString, _ := json.Marshal(config)
+	logger.Infof("start app with configuration: %s", string(cfgString))
+
 	dbURI := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		config.DB.Host,
 		config.DB.Port,
@@ -37,9 +52,10 @@ func (a *App) Initialize(config *config.Config) {
 
 	db, err := gorm.Open(config.DB.Dialect, dbURI)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
-	fmt.Println("db connected")
+
+	logger.Info("db connected")
 
 	a.DB = model.DBMigrate(db)
 	a.Router = mux.NewRouter()
@@ -73,7 +89,6 @@ func (a *App) Register(r *mux.Router, s handler.Subroute, m ...middleware.Middle
 		r.Use(mid.Middleware)
 	}
 	s.Register(r)
-	// create links
 	a.Routes = append(a.Routes, s)
 }
 
@@ -89,5 +104,5 @@ func (a *App) Run(host string) {
 
 	h := c.Handler(a.Router)
 
-	log.Fatal(http.ListenAndServe(host, h))
+	logger.Fatal(http.ListenAndServe(host, h))
 }

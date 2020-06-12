@@ -2,7 +2,7 @@ package model
 
 import "github.com/jinzhu/gorm"
 
-// Personal is a personalal data
+// Personal is a personal data
 type Personal struct {
 	gorm.Model
 	FirstName string `json:"firstName" gorm:"not null"`
