@@ -4,16 +4,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Delisa-sama/logger"
-	"github.com/codebysmirnov/write-about/app/handler"
-	"github.com/codebysmirnov/write-about/app/handler/auth"
-	"github.com/codebysmirnov/write-about/app/handler/diary"
-	"github.com/codebysmirnov/write-about/app/handler/user"
+	"github.com/codebysmirnov/write-about/app/controller"
+	"github.com/codebysmirnov/write-about/app/controller/auth"
+	"github.com/codebysmirnov/write-about/app/controller/diary"
+	"github.com/codebysmirnov/write-about/app/controller/user"
 	"github.com/codebysmirnov/write-about/app/middleware"
-	authorization "github.com/codebysmirnov/write-about/app/middleware/auth"
+	jwtauth "github.com/codebysmirnov/write-about/app/middleware/auth/jwt"
 	"github.com/codebysmirnov/write-about/app/model"
 	"github.com/codebysmirnov/write-about/config"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -22,9 +23,10 @@ import (
 
 // App - main app struct
 type App struct {
+	addr   string
 	Router *mux.Router
 	DB     *gorm.DB
-	Routes []handler.Subroute
+	Routes []controller.Controller
 }
 
 // Initialize the app
@@ -57,6 +59,8 @@ func (a *App) Initialize(config *config.Config) {
 
 	logger.Info("db connected")
 
+	a.addr = fmt.Sprintf("%s:%s", config.Host, config.Port)
+
 	a.DB = model.DBMigrate(db)
 	a.Router = mux.NewRouter()
 
@@ -65,7 +69,10 @@ func (a *App) Initialize(config *config.Config) {
 
 // Handlers sets the all required routers
 func (a *App) Handlers() {
-	jwt := authorization.NewJWT(os.Getenv("SUPER_KEY"))
+	jwt := jwtauth.NewJWT(
+		jwtauth.SigningKey(os.Getenv("SUPER_KEY")),
+		jwtauth.DefaultExpire(time.Minute*15),
+	)
 
 	a.Register(
 		a.Router.PathPrefix("/auth").Subrouter(),
@@ -84,7 +91,7 @@ func (a *App) Handlers() {
 }
 
 // Register add subrouter
-func (a *App) Register(r *mux.Router, s handler.Subroute, m ...middleware.Middleware) {
+func (a *App) Register(r *mux.Router, s controller.Controller, m ...middleware.Middleware) {
 	for _, mid := range m {
 		r.Use(mid.Middleware)
 	}
@@ -93,7 +100,7 @@ func (a *App) Register(r *mux.Router, s handler.Subroute, m ...middleware.Middle
 }
 
 // Run the app on it's router
-func (a *App) Run(host string) {
+func (a *App) Run() {
 	// Access to headers
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -104,5 +111,7 @@ func (a *App) Run(host string) {
 
 	h := c.Handler(a.Router)
 
-	logger.Fatal(http.ListenAndServe(host, h))
+	if err := http.ListenAndServe(a.addr, h); err != nil {
+		logger.Fatalf("Server crash: %s", err.Error())
+	}
 }

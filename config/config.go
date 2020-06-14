@@ -6,6 +6,8 @@ import "os"
 type Config struct {
 	DB      *DBConfig
 	LogPath string
+	Host    string
+	Port    string
 }
 
 // DBConfig contain main fields for connect to DB
@@ -23,14 +25,16 @@ type DBConfig struct {
 func GetConfig() *Config {
 	return &Config{
 		DB: &DBConfig{
-			Dialect:  getEnv("DIALECT", "postgres"),
-			Host:     getEnv("HOST", "127.0.0.1"),
-			Port:     getEnv("PORT", "5432"),
+			Dialect:  getEnv("DB_DIALECT", "postgres"),
+			Host:     getEnv("DB_HOST", "127.0.0.1"),
+			Port:     getEnv("DB_PORT", "5432"),
 			Username: getEnv("DB_USER", "smirnov"),
 			Password: getEnv("DB_PASSWORD", "baikal"),
 			Name:     getEnv("DB_NAME", "api"),
 		},
 		LogPath: getEnv("LOG_PATH", "app.log"),
+		Host:    getEnv("APP_HOST", ""),
+		Port:    getEnv("APP_PORT", "8080"),
 	}
 }
 

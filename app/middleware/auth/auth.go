@@ -8,3 +8,6 @@ type Auth interface {
 	Validate(token string) (bool, error)
 	Generate(...interface{}) (string, error)
 }
+
+// Context metadata
+type Meta map[string]interface{}

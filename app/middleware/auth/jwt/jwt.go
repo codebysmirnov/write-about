@@ -1,8 +1,9 @@
-package auth
+package jwt
 
 import (
 	"context"
 	"errors"
+	"github.com/codebysmirnov/write-about/app/middleware/auth"
 	"github.com/codebysmirnov/write-about/app/utils"
 	"net/http"
 	"time"
@@ -12,15 +13,20 @@ import (
 
 // JWT struct
 type JWT struct {
-	signingKey []byte
+	signingKey    []byte
+	defaultExpire time.Duration
 }
 
-// NewJWT use secret key for generate token
-func NewJWT(key string) *JWT {
-	if len(key) <= 0 {
-		panic("Empty jwt key")
+// Default token expire time is 30 minutes
+func NewJWT(opts ...Option) *JWT {
+	options := newOptions(opts...)
+
+	if len(options.signingKey) <= 0 {
+		panic("Empty JWT key")
 	}
-	return &JWT{signingKey: []byte(key)}
+
+	obj := JWT(options)
+	return &obj
 }
 
 // Middleware check user auth
@@ -39,7 +45,7 @@ func (j *JWT) Middleware(handler http.Handler) http.Handler {
 				utils.RespondError(w, http.StatusBadRequest, err.Error())
 				return
 			}
-			ctx := context.WithValue(context.Background(), "user", claims)
+			ctx := context.WithValue(context.Background(), "user", auth.Meta(claims))
 			if token.Valid {
 				handler.ServeHTTP(w, r.WithContext(ctx))
 			}
@@ -57,14 +63,26 @@ func (j *JWT) Validate(token string) (bool, error) {
 // Generate token for user auth
 // TODO: Fix pars params
 func (j *JWT) Generate(args ...interface{}) (string, error) {
-	params := map[string]interface{}{}
+	params := auth.Meta{}
 	for _, arg := range args {
 		switch arg.(type) {
-		case map[string]interface{}:
-			params = arg.(map[string]interface{})
+		case auth.Meta, map[string]interface{}:
+			params = arg.(auth.Meta)
 		default:
 			return "", errors.New("token generate fail")
 		}
+	}
+
+	// use custom expire time if exists
+	var expire = j.defaultExpire
+	if val, ok := params["expire"]; ok {
+		switch val.(type) {
+		case time.Duration:
+			expire = val.(time.Duration)
+		default:
+			return "", errors.New("invalid value type of token expire duration")
+		}
+		delete(params, "expire")
 	}
 
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -74,7 +92,7 @@ func (j *JWT) Generate(args ...interface{}) (string, error) {
 		claims[k] = v
 	}
 
-	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
+	claims["expire"] = time.Now().Add(expire).Unix()
 
 	tokenString, err := token.SignedString(j.signingKey)
 	if err != nil {

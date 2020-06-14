@@ -82,7 +82,7 @@ func (a *Auth) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc := map[string]interface{}{"user_id": user.ID}
+	uc := auth.Meta{"user_id": user.ID}
 	token, err := a.auth.Generate(uc)
 	if err != nil {
 		utils.RespondError(w, http.StatusBadRequest, err.Error())
@@ -92,7 +92,7 @@ func (a *Auth) Login(w http.ResponseWriter, r *http.Request) {
 	utils.ResponseJSON(w, http.StatusCreated, token)
 }
 
-// Register route handlers
+// Register controller handlers
 func (a *Auth) Register(r *mux.Router) {
 	r.HandleFunc("/register", a.Registration).Methods("POST")
 	r.HandleFunc("/login", a.Login).Methods("POST")

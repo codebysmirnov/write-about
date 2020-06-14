@@ -13,5 +13,5 @@ func main() {
 	a := &app.App{}
 	a.Initialize(conf)
 
-	a.Run(":3000")
+	a.Run()
 }
