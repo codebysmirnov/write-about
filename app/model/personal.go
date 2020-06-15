@@ -6,7 +6,7 @@ import "github.com/jinzhu/gorm"
 type Personal struct {
 	gorm.Model
 	FirstName string `json:"firstName" gorm:"not null"`
-	Lastname  string `json:"lastName"`
+	LastName  string `json:"lastName"`
 	Phone     string `json:"phone"`
 	Email     string `json:"email" gorm:"unique;not null"`
 	IDUser    uint   `json:"id_user" gorm:"index:id_user_personal_index"`

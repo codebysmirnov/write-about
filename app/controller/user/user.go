@@ -16,6 +16,9 @@ type User struct {
 
 // New user module
 func New(db *gorm.DB) *User {
+	if db == nil {
+		panic("failed to initialize Auth controller: db parameter is nil-pointer")
+	}
 	return &User{db: db}
 }
 

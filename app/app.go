@@ -12,13 +12,12 @@ import (
 	jwtauth "github.com/codebysmirnov/write-about/app/middleware/auth/jwt"
 	"github.com/codebysmirnov/write-about/app/model"
 	"github.com/codebysmirnov/write-about/config"
-	"net/http"
-	"os"
-	"time"
-
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/rs/cors"
+	"net/http"
+	"os"
+	"time"
 )
 
 // App - main app struct
@@ -39,7 +38,7 @@ func (a *App) Initialize(config *config.Config) {
 
 	logger.Init(
 		logger.Output(logFile),
-		logger.Level(logger.INFO),
+		logger.Level(logger.INFO), // TODO: get log-level from config
 	)
 
 	cfgString, _ := json.Marshal(config)
@@ -50,7 +49,8 @@ func (a *App) Initialize(config *config.Config) {
 		config.DB.Port,
 		config.DB.Username,
 		config.DB.Password,
-		config.DB.Name)
+		config.DB.Name,
+	)
 
 	db, err := gorm.Open(config.DB.Dialect, dbURI)
 	if err != nil {
@@ -64,13 +64,8 @@ func (a *App) Initialize(config *config.Config) {
 	a.DB = model.DBMigrate(db)
 	a.Router = mux.NewRouter()
 
-	a.Handlers()
-}
-
-// Handlers sets the all required routers
-func (a *App) Handlers() {
 	jwt := jwtauth.NewJWT(
-		jwtauth.SigningKey(os.Getenv("SUPER_KEY")),
+		jwtauth.SigningKey(config.SigningKey),
 		jwtauth.DefaultExpire(time.Minute*15),
 	)
 
@@ -90,7 +85,7 @@ func (a *App) Handlers() {
 	)
 }
 
-// Register add subrouter
+// Register a controller with subroute
 func (a *App) Register(r *mux.Router, s controller.Controller, m ...middleware.Middleware) {
 	for _, mid := range m {
 		r.Use(mid.Middleware)

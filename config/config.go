@@ -4,10 +4,11 @@ import "os"
 
 // Config structure
 type Config struct {
-	DB      *DBConfig
-	LogPath string
-	Host    string
-	Port    string
+	DB         *DBConfig
+	LogPath    string
+	Host       string
+	Port       string
+	SigningKey string
 }
 
 // DBConfig contain main fields for connect to DB
@@ -32,9 +33,10 @@ func GetConfig() *Config {
 			Password: getEnv("DB_PASSWORD", "baikal"),
 			Name:     getEnv("DB_NAME", "api"),
 		},
-		LogPath: getEnv("LOG_PATH", "app.log"),
-		Host:    getEnv("APP_HOST", ""),
-		Port:    getEnv("APP_PORT", "8080"),
+		LogPath:    getEnv("LOG_PATH", "app.log"),
+		Host:       getEnv("APP_HOST", ""),
+		Port:       getEnv("APP_PORT", "8080"),
+		SigningKey: getEnv("SUPER_KEY", ""),
 	}
 }
 

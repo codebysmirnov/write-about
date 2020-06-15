@@ -19,6 +19,9 @@ type Diary struct {
 
 // New diary module
 func New(db *gorm.DB) *Diary {
+	if db == nil {
+		panic("failed to initialize Auth controller: db parameter is nil-pointer")
+	}
 	return &Diary{db: db}
 }
 

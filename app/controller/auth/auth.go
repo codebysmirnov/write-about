@@ -17,8 +17,15 @@ type Auth struct {
 	auth auth.Auth
 }
 
-// New Auth module
+// New Auth controller
+// may throw panic when one of parameter is nil-pointer
 func New(db *gorm.DB, auth auth.Auth) *Auth {
+	if db == nil {
+		panic("failed to initialize Auth controller: db parameter is nil-pointer")
+	}
+	if auth == nil {
+		panic("failed to initialize Auth controller: auth parameter is nil-pointer")
+	}
 	return &Auth{db: db, auth: auth}
 }
 

@@ -7,5 +7,5 @@ type User struct {
 	gorm.Model
 	Login    string `json:"login" gorm:"unique"`
 	Password string `json:"password"`
-	Token    string `json:"token"`
+	Token    string `json:"token"` // TODO: move token to session entity
 }

@@ -15,6 +15,7 @@ import (
 type JWT struct {
 	signingKey    []byte
 	defaultExpire time.Duration
+	tokenHeader   string
 }
 
 // Default token expire time is 30 minutes
@@ -33,7 +34,7 @@ func NewJWT(opts ...Option) *JWT {
 // TODO: Brake this method to validate() and middleware()
 func (j *JWT) Middleware(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if val, ok := r.Header["Token"]; ok {
+		if val, ok := r.Header[j.tokenHeader]; ok {
 			claims := jwt.MapClaims{}
 			token, err := jwt.ParseWithClaims(val[0], claims, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -61,17 +62,8 @@ func (j *JWT) Validate(token string) (bool, error) {
 }
 
 // Generate token for user auth
-// TODO: Fix pars params
-func (j *JWT) Generate(args ...interface{}) (string, error) {
-	params := auth.Meta{}
-	for _, arg := range args {
-		switch arg.(type) {
-		case auth.Meta, map[string]interface{}:
-			params = arg.(auth.Meta)
-		default:
-			return "", errors.New("token generate fail")
-		}
-	}
+func (j *JWT) Generate(args ...auth.Meta) (string, error) {
+	params := args[0]
 
 	// use custom expire time if exists
 	var expire = j.defaultExpire
