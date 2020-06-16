@@ -36,7 +36,7 @@ func GetConfig() *Config {
 		LogPath:    getEnv("LOG_PATH", "app.log"),
 		Host:       getEnv("APP_HOST", ""),
 		Port:       getEnv("APP_PORT", "8080"),
-		SigningKey: getEnv("SUPER_KEY", ""),
+		SigningKey: getEnv("SUPER_KEY", "DEFAULT"),
 	}
 }
 

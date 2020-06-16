@@ -25,31 +25,43 @@ func New(db *gorm.DB) *Diary {
 	return &Diary{db: db}
 }
 
+type createDiary struct {
+	Year int `json:"year"`
+}
+
 // CreateDiary - create new diary for current user
 func (d *Diary) CreateDiary(w http.ResponseWriter, r *http.Request) {
+	in := &createDiary{}
+	if err := json.NewDecoder(r.Body).Decode(in); err != nil {
+		utils.RespondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if in.Year <= 0 {
+		utils.RespondError(w, http.StatusBadRequest, "Invalid year number")
+		return
+	}
+
 	var userMeta = r.Context().Value("user").(auth.Meta)
 
-	userId := userMeta["user_id"].(uint)
+	userId := userMeta["user_id"]
 
 	user := model.User{}
-	if err := d.db.First(&user, userId).Error; err != nil {
+	if err := d.db.Where("id = ?", userId).First(&user).Error; err != nil {
 		utils.RespondError(w, http.StatusNotFound, err.Error())
 		return
 	}
 
-	diary := model.Diary{}
-	decoder := json.NewDecoder(r.Body)
-
-	if err := decoder.Decode(&diary); err != nil {
-		utils.RespondError(w, http.StatusBadRequest, err.Error())
-		return
+	newDiary := &model.Diary{
+		Year:   in.Year,
+		IDUser: user.ID,
 	}
-	defer r.Body.Close()
 
-	if err := d.db.Save(&diary).Error; err != nil {
+	if err := d.db.Save(&newDiary).Error; err != nil {
 		utils.RespondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+
 	utils.ResponseJSON(w, http.StatusCreated, nil)
 }
 

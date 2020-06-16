@@ -47,7 +47,7 @@ func (a *Auth) Registration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(strings.TrimSpace(in.Login)) < 6 {
+	if len(strings.TrimSpace(in.Password)) < 6 {
 		utils.RespondError(w, http.StatusBadRequest, "Password must be longer than five characters")
 		return
 	}
@@ -78,7 +78,7 @@ func (a *Auth) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(strings.TrimSpace(in.Login)) < 6 {
+	if len(strings.TrimSpace(in.Password)) < 6 {
 		utils.RespondError(w, http.StatusBadRequest, "Password must be longer than five characters")
 		return
 	}
