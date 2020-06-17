@@ -49,8 +49,7 @@ func (a *App) Initialize(config *config.Config) {
 		config.DB.Port,
 		config.DB.Username,
 		config.DB.Password,
-		config.DB.Name,
-	)
+		config.DB.Name)
 
 	db, err := gorm.Open(config.DB.Dialect, dbURI)
 	if err != nil {
