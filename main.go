@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	conf := config.GetConfig()
+	conf, err := config.GetConfig()
+	if err != nil {
+		panic("failed to get application configuration: " + err.Error())
+	}
 
 	a := &app.App{}
 	a.Initialize(conf)
