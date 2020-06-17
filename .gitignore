@@ -7,3 +7,5 @@
 *.out
 *.log
 .idea
+.env
+sqlboiler.toml

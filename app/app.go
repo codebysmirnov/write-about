@@ -60,7 +60,6 @@ func (a *App) Initialize(config *config.Config) {
 
 	a.addr = fmt.Sprintf("%s:%s", config.Host, config.Port)
 
-	a.DB = model.DBMigrate(db)
 	a.Router = mux.NewRouter()
 
 	jwt := jwtauth.NewJWT(

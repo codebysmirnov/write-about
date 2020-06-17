@@ -24,7 +24,7 @@ func New(db *gorm.DB) *User {
 
 // AllUsers - get all users on system
 func (u *User) AllUsers(w http.ResponseWriter, r *http.Request) {
-	users := []model.User{}
+	var users []model.User
 	u.db.Find(&users)
 	utils.ResponseJSON(w, http.StatusOK, users)
 }
