@@ -46,7 +46,8 @@ func (j *JWT) Middleware(handler http.Handler) http.Handler {
 				utils.RespondError(w, http.StatusBadRequest, err.Error())
 				return
 			}
-			ctx := context.WithValue(context.Background(), "user", auth.Meta(claims))
+
+			ctx := context.WithValue(r.Context(), "user", auth.Meta(claims))
 			if token.Valid {
 				handler.ServeHTTP(w, r.WithContext(ctx))
 			}
