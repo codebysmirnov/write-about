@@ -9,5 +9,5 @@ type Personal struct {
 	LastName  string `json:"lastName"`
 	Phone     string `json:"phone"`
 	Email     string `json:"email" gorm:"unique;not null"`
-	IDUser    uint   `json:"id_user" gorm:"index:id_user_personal_index"`
+	UserID    uint   `json:"user_id" gorm:"index:user_id_personal_index"`
 }

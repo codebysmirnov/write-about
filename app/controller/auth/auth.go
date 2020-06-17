@@ -65,6 +65,10 @@ func (a *Auth) Registration(w http.ResponseWriter, r *http.Request) {
 	utils.ResponseJSON(w, http.StatusCreated, newUser)
 }
 
+type loginResponse struct {
+	Token string `json:"token"`
+}
+
 // Login - take a token
 func (a *Auth) Login(w http.ResponseWriter, r *http.Request) {
 	in := &userCredentials{}
@@ -96,7 +100,7 @@ func (a *Auth) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.ResponseJSON(w, http.StatusCreated, token)
+	utils.ResponseJSON(w, http.StatusCreated, &loginResponse{Token: token})
 }
 
 // Register controller handlers

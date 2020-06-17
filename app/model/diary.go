@@ -6,5 +6,5 @@ import "github.com/jinzhu/gorm"
 type Diary struct {
 	gorm.Model
 	Year   int  `json:"year" gorm:"not null"`
-	IDUser uint `json:"id_user" gorm:"index:id_user_index"`
+	UserID uint `json:"user_id" gorm:"index:user_id_index"`
 }

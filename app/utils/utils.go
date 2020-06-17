@@ -12,8 +12,13 @@ type Error struct {
 	Message string
 }
 
+type Empty struct{}
+
 // ResponseJSON makes json response
 func ResponseJSON(w http.ResponseWriter, status int, payload interface{}) {
+	if payload == nil {
+		payload = Empty{}
+	}
 	response, err := json.Marshal(payload)
 	if err != nil {
 		logger.Errorf("Failed to marshal response payload: %s", err.Error())

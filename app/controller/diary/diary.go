@@ -54,7 +54,7 @@ func (d *Diary) CreateDiary(w http.ResponseWriter, r *http.Request) {
 
 	newDiary := &model.Diary{
 		Year:   in.Year,
-		IDUser: user.ID,
+		UserID: user.ID,
 	}
 
 	if err := d.db.Save(&newDiary).Error; err != nil {
@@ -65,24 +65,42 @@ func (d *Diary) CreateDiary(w http.ResponseWriter, r *http.Request) {
 	utils.ResponseJSON(w, http.StatusCreated, nil)
 }
 
-// GetDiary user get only his diary
+type ListItem struct {
+	ID   uint `json:"id"`
+	Year int  `json:"year"`
+}
+
+type getDiaryResponse struct {
+	Diaries []ListItem `json:"diaries"`
+}
+
+// GetDiary user get only his diary by year
 func (d *Diary) GetDiary(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-
 	var userMeta = r.Context().Value("user").(auth.Meta)
-	year, _ := strconv.Atoi(vars["year"])
+	year, _ := strconv.Atoi(r.FormValue("year"))
 
-	diary := model.Diary{}
-	if err := d.db.First(&diary, userMeta["user_id"].(uint), year).Error; err != nil {
+	query := d.db.Where("user_id = ?", userMeta["user_id"])
+	if year > 0 {
+		query = query.Where("year = ?", year)
+	}
+
+	var diaries []model.Diary
+
+	if err := query.Find(&diaries).Error; err != nil {
 		utils.RespondError(w, http.StatusNotFound, err.Error())
 		return
 	}
 
-	utils.ResponseJSON(w, http.StatusOK, diary)
+	var items []ListItem
+	for _, diary := range diaries {
+		items = append(items, ListItem{diary.ID, diary.Year})
+	}
+
+	utils.ResponseJSON(w, http.StatusOK, getDiaryResponse{items})
 }
 
 // Register controller handlers
 func (d *Diary) Register(r *mux.Router) {
 	r.HandleFunc("/", d.CreateDiary).Methods("POST")
-	r.HandleFunc("/{id:[0-9]+}", d.GetDiary).Methods("GET")
+	r.HandleFunc("/search", d.GetDiary).Methods("GET")
 }
