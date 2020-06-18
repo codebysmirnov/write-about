@@ -1,6 +1,7 @@
 package app
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/Delisa-sama/logger"
@@ -10,10 +11,8 @@ import (
 	"github.com/codebysmirnov/write-about/app/controller/user"
 	"github.com/codebysmirnov/write-about/app/middleware"
 	jwtauth "github.com/codebysmirnov/write-about/app/middleware/auth/jwt"
-	"github.com/codebysmirnov/write-about/app/model"
 	"github.com/codebysmirnov/write-about/config"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	"github.com/rs/cors"
 	"net/http"
 	"os"
@@ -24,7 +23,7 @@ import (
 type App struct {
 	addr   string
 	Router *mux.Router
-	DB     *gorm.DB
+	DB     *sql.DB
 	Routes []controller.Controller
 }
 
@@ -51,16 +50,17 @@ func (a *App) Initialize(config *config.Config) {
 		config.DB.Password,
 		config.DB.Name)
 
-	db, err := gorm.Open(config.DB.Dialect, dbURI)
+	db, err := sql.Open(config.DB.Dialect, dbURI)
 	if err != nil {
 		logger.Fatal(err)
 	}
+
+	a.DB = db
 
 	logger.Info("db connected")
 
 	a.addr = fmt.Sprintf("%s:%s", config.Host, config.Port)
 
-	a.DB = model.DBMigrate(db)
 	a.Router = mux.NewRouter()
 
 	jwt := jwtauth.NewJWT(
@@ -106,6 +106,6 @@ func (a *App) Run() {
 	h := c.Handler(a.Router)
 
 	if err := http.ListenAndServe(a.addr, h); err != nil {
-		logger.Fatalf("Server crash: %s", err.Error())
+		panic("Server crash: " + err.Error())
 	}
 }

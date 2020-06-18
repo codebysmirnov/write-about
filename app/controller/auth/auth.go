@@ -1,25 +1,26 @@
 package auth
 
 import (
+	"database/sql"
 	"encoding/json"
 	"github.com/codebysmirnov/write-about/app/middleware/auth"
 	"github.com/codebysmirnov/write-about/app/model"
 	"github.com/codebysmirnov/write-about/app/utils"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
+	"github.com/volatiletech/sqlboiler/boil"
 	"net/http"
 	"strings"
 )
 
 // Auth struct
 type Auth struct {
-	db   *gorm.DB
+	db   *sql.DB
 	auth auth.Auth
 }
 
 // New Auth controller
 // may throw panic when one of parameter is nil-pointer
-func New(db *gorm.DB, auth auth.Auth) *Auth {
+func New(db *sql.DB, auth auth.Auth) *Auth {
 	if db == nil {
 		panic("failed to initialize Auth controller: db parameter is nil-pointer")
 	}
@@ -57,12 +58,12 @@ func (a *Auth) Registration(w http.ResponseWriter, r *http.Request) {
 		Password: in.Password,
 	}
 
-	if err := a.db.Create(newUser).Error; err != nil {
+	if err := newUser.Insert(a.db, boil.Infer()); err != nil {
 		utils.RespondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	utils.ResponseJSON(w, http.StatusCreated, newUser)
+	utils.ResponseJSON(w, http.StatusCreated, utils.Empty{})
 }
 
 type loginResponse struct {
@@ -87,8 +88,11 @@ func (a *Auth) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := &model.User{}
-	if err := a.db.Model(user).Where("login = ? and password = ?", in.Login, in.Password).First(user).Error; err != nil {
+	user, err := model.Users(
+		model.UserWhere.Login.EQ(in.Login),
+		model.UserWhere.Password.EQ(in.Password),
+	).One(a.db)
+	if err != nil {
 		utils.RespondError(w, http.StatusNotFound, err.Error())
 		return
 	}

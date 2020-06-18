@@ -1,0 +1,14 @@
+output           = "model"
+wipe             = true
+no_tests         = false
+no_context       = true
+add_soft_deletes = true
+
+[psql]
+  dbname = "dbname"
+  host   = "localhost"
+  port   = 5432
+  user   = "dbusername"
+  pass   = "dbpassword"
+  schema = "myschema"
+  blacklist = ["migrations"]
