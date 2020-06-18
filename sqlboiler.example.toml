@@ -1,6 +1,7 @@
-output   = "model"
-wipe     = true
-no_tests = false
+output           = "model"
+wipe             = true
+no_tests         = false
+no_context       = true
 add_soft_deletes = true
 
 [psql]

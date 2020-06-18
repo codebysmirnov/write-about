@@ -4,7 +4,6 @@
 package model
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"reflect"
@@ -163,7 +162,7 @@ type (
 	// This should generally be used opposed to []Diary.
 	DiarySlice []*Diary
 	// DiaryHook is the signature for custom Diary hook methods
-	DiaryHook func(context.Context, boil.ContextExecutor, *Diary) error
+	DiaryHook func(boil.Executor, *Diary) error
 
 	diaryQuery struct {
 		*queries.Query
@@ -203,13 +202,9 @@ var diaryAfterDeleteHooks []DiaryHook
 var diaryAfterUpsertHooks []DiaryHook
 
 // doBeforeInsertHooks executes all "before insert" hooks.
-func (o *Diary) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
-	if boil.HooksAreSkipped(ctx) {
-		return nil
-	}
-
+func (o *Diary) doBeforeInsertHooks(exec boil.Executor) (err error) {
 	for _, hook := range diaryBeforeInsertHooks {
-		if err := hook(ctx, exec, o); err != nil {
+		if err := hook(exec, o); err != nil {
 			return err
 		}
 	}
@@ -218,13 +213,9 @@ func (o *Diary) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecut
 }
 
 // doBeforeUpdateHooks executes all "before Update" hooks.
-func (o *Diary) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
-	if boil.HooksAreSkipped(ctx) {
-		return nil
-	}
-
+func (o *Diary) doBeforeUpdateHooks(exec boil.Executor) (err error) {
 	for _, hook := range diaryBeforeUpdateHooks {
-		if err := hook(ctx, exec, o); err != nil {
+		if err := hook(exec, o); err != nil {
 			return err
 		}
 	}
@@ -233,13 +224,9 @@ func (o *Diary) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecut
 }
 
 // doBeforeDeleteHooks executes all "before Delete" hooks.
-func (o *Diary) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
-	if boil.HooksAreSkipped(ctx) {
-		return nil
-	}
-
+func (o *Diary) doBeforeDeleteHooks(exec boil.Executor) (err error) {
 	for _, hook := range diaryBeforeDeleteHooks {
-		if err := hook(ctx, exec, o); err != nil {
+		if err := hook(exec, o); err != nil {
 			return err
 		}
 	}
@@ -248,13 +235,9 @@ func (o *Diary) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecut
 }
 
 // doBeforeUpsertHooks executes all "before Upsert" hooks.
-func (o *Diary) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
-	if boil.HooksAreSkipped(ctx) {
-		return nil
-	}
-
+func (o *Diary) doBeforeUpsertHooks(exec boil.Executor) (err error) {
 	for _, hook := range diaryBeforeUpsertHooks {
-		if err := hook(ctx, exec, o); err != nil {
+		if err := hook(exec, o); err != nil {
 			return err
 		}
 	}
@@ -263,13 +246,9 @@ func (o *Diary) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecut
 }
 
 // doAfterInsertHooks executes all "after Insert" hooks.
-func (o *Diary) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
-	if boil.HooksAreSkipped(ctx) {
-		return nil
-	}
-
+func (o *Diary) doAfterInsertHooks(exec boil.Executor) (err error) {
 	for _, hook := range diaryAfterInsertHooks {
-		if err := hook(ctx, exec, o); err != nil {
+		if err := hook(exec, o); err != nil {
 			return err
 		}
 	}
@@ -278,13 +257,9 @@ func (o *Diary) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecuto
 }
 
 // doAfterSelectHooks executes all "after Select" hooks.
-func (o *Diary) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
-	if boil.HooksAreSkipped(ctx) {
-		return nil
-	}
-
+func (o *Diary) doAfterSelectHooks(exec boil.Executor) (err error) {
 	for _, hook := range diaryAfterSelectHooks {
-		if err := hook(ctx, exec, o); err != nil {
+		if err := hook(exec, o); err != nil {
 			return err
 		}
 	}
@@ -293,13 +268,9 @@ func (o *Diary) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecuto
 }
 
 // doAfterUpdateHooks executes all "after Update" hooks.
-func (o *Diary) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
-	if boil.HooksAreSkipped(ctx) {
-		return nil
-	}
-
+func (o *Diary) doAfterUpdateHooks(exec boil.Executor) (err error) {
 	for _, hook := range diaryAfterUpdateHooks {
-		if err := hook(ctx, exec, o); err != nil {
+		if err := hook(exec, o); err != nil {
 			return err
 		}
 	}
@@ -308,13 +279,9 @@ func (o *Diary) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecuto
 }
 
 // doAfterDeleteHooks executes all "after Delete" hooks.
-func (o *Diary) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
-	if boil.HooksAreSkipped(ctx) {
-		return nil
-	}
-
+func (o *Diary) doAfterDeleteHooks(exec boil.Executor) (err error) {
 	for _, hook := range diaryAfterDeleteHooks {
-		if err := hook(ctx, exec, o); err != nil {
+		if err := hook(exec, o); err != nil {
 			return err
 		}
 	}
@@ -323,13 +290,9 @@ func (o *Diary) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecuto
 }
 
 // doAfterUpsertHooks executes all "after Upsert" hooks.
-func (o *Diary) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
-	if boil.HooksAreSkipped(ctx) {
-		return nil
-	}
-
+func (o *Diary) doAfterUpsertHooks(exec boil.Executor) (err error) {
 	for _, hook := range diaryAfterUpsertHooks {
-		if err := hook(ctx, exec, o); err != nil {
+		if err := hook(exec, o); err != nil {
 			return err
 		}
 	}
@@ -362,12 +325,12 @@ func AddDiaryHook(hookPoint boil.HookPoint, diaryHook DiaryHook) {
 }
 
 // One returns a single diary record from the query.
-func (q diaryQuery) One(ctx context.Context, exec boil.ContextExecutor) (*Diary, error) {
+func (q diaryQuery) One(exec boil.Executor) (*Diary, error) {
 	o := &Diary{}
 
 	queries.SetLimit(q.Query, 1)
 
-	err := q.Bind(ctx, exec, o)
+	err := q.Bind(nil, exec, o)
 	if err != nil {
 		if errors.Cause(err) == sql.ErrNoRows {
 			return nil, sql.ErrNoRows
@@ -375,7 +338,7 @@ func (q diaryQuery) One(ctx context.Context, exec boil.ContextExecutor) (*Diary,
 		return nil, errors.Wrap(err, "model: failed to execute a one query for diary")
 	}
 
-	if err := o.doAfterSelectHooks(ctx, exec); err != nil {
+	if err := o.doAfterSelectHooks(exec); err != nil {
 		return o, err
 	}
 
@@ -383,17 +346,17 @@ func (q diaryQuery) One(ctx context.Context, exec boil.ContextExecutor) (*Diary,
 }
 
 // All returns all Diary records from the query.
-func (q diaryQuery) All(ctx context.Context, exec boil.ContextExecutor) (DiarySlice, error) {
+func (q diaryQuery) All(exec boil.Executor) (DiarySlice, error) {
 	var o []*Diary
 
-	err := q.Bind(ctx, exec, &o)
+	err := q.Bind(nil, exec, &o)
 	if err != nil {
 		return nil, errors.Wrap(err, "model: failed to assign all query results to Diary slice")
 	}
 
 	if len(diaryAfterSelectHooks) != 0 {
 		for _, obj := range o {
-			if err := obj.doAfterSelectHooks(ctx, exec); err != nil {
+			if err := obj.doAfterSelectHooks(exec); err != nil {
 				return o, err
 			}
 		}
@@ -403,13 +366,13 @@ func (q diaryQuery) All(ctx context.Context, exec boil.ContextExecutor) (DiarySl
 }
 
 // Count returns the count of all Diary records in the query.
-func (q diaryQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (q diaryQuery) Count(exec boil.Executor) (int64, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
 	queries.SetCount(q.Query)
 
-	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
+	err := q.Query.QueryRow(exec).Scan(&count)
 	if err != nil {
 		return 0, errors.Wrap(err, "model: failed to count diary rows")
 	}
@@ -418,14 +381,14 @@ func (q diaryQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64
 }
 
 // Exists checks if the row exists in the table.
-func (q diaryQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
+func (q diaryQuery) Exists(exec boil.Executor) (bool, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
 	queries.SetCount(q.Query)
 	queries.SetLimit(q.Query, 1)
 
-	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
+	err := q.Query.QueryRow(exec).Scan(&count)
 	if err != nil {
 		return false, errors.Wrap(err, "model: failed to check if diary exists")
 	}
@@ -449,7 +412,7 @@ func (o *Diary) User(mods ...qm.QueryMod) userQuery {
 
 // LoadUser allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for an N-1 relationship.
-func (diaryL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular bool, maybeDiary interface{}, mods queries.Applicator) error {
+func (diaryL) LoadUser(e boil.Executor, singular bool, maybeDiary interface{}, mods queries.Applicator) error {
 	var slice []*Diary
 	var object *Diary
 
@@ -497,7 +460,7 @@ func (diaryL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular boo
 		mods.Apply(query)
 	}
 
-	results, err := query.QueryContext(ctx, e)
+	results, err := query.Query(e)
 	if err != nil {
 		return errors.Wrap(err, "failed to eager load User")
 	}
@@ -516,7 +479,7 @@ func (diaryL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular boo
 
 	if len(diaryAfterSelectHooks) != 0 {
 		for _, obj := range resultSlice {
-			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+			if err := obj.doAfterSelectHooks(e); err != nil {
 				return err
 			}
 		}
@@ -555,10 +518,10 @@ func (diaryL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular boo
 // SetUser of the diary to the related item.
 // Sets o.R.User to related.
 // Adds o to related.R.Diaries.
-func (o *Diary) SetUser(ctx context.Context, exec boil.ContextExecutor, insert bool, related *User) error {
+func (o *Diary) SetUser(exec boil.Executor, insert bool, related *User) error {
 	var err error
 	if insert {
-		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+		if err = related.Insert(exec, boil.Infer()); err != nil {
 			return errors.Wrap(err, "failed to insert into foreign table")
 		}
 	}
@@ -570,12 +533,11 @@ func (o *Diary) SetUser(ctx context.Context, exec boil.ContextExecutor, insert b
 	)
 	values := []interface{}{related.ID, o.ID}
 
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, updateQuery)
-		fmt.Fprintln(writer, values)
+	if boil.DebugMode {
+		fmt.Fprintln(boil.DebugWriter, updateQuery)
+		fmt.Fprintln(boil.DebugWriter, values)
 	}
-	if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+	if _, err = exec.Exec(updateQuery, values...); err != nil {
 		return errors.Wrap(err, "failed to update local table")
 	}
 
@@ -602,11 +564,11 @@ func (o *Diary) SetUser(ctx context.Context, exec boil.ContextExecutor, insert b
 // RemoveUser relationship.
 // Sets o.R.User to nil.
 // Removes o from all passed in related items' relationships struct (Optional).
-func (o *Diary) RemoveUser(ctx context.Context, exec boil.ContextExecutor, related *User) error {
+func (o *Diary) RemoveUser(exec boil.Executor, related *User) error {
 	var err error
 
 	queries.SetScanner(&o.UserID, nil)
-	if _, err = o.Update(ctx, exec, boil.Whitelist("user_id")); err != nil {
+	if _, err = o.Update(exec, boil.Whitelist("user_id")); err != nil {
 		return errors.Wrap(err, "failed to update local table")
 	}
 
@@ -640,7 +602,7 @@ func Diaries(mods ...qm.QueryMod) diaryQuery {
 
 // FindDiary retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindDiary(ctx context.Context, exec boil.ContextExecutor, iD int, selectCols ...string) (*Diary, error) {
+func FindDiary(exec boil.Executor, iD int, selectCols ...string) (*Diary, error) {
 	diaryObj := &Diary{}
 
 	sel := "*"
@@ -653,7 +615,7 @@ func FindDiary(ctx context.Context, exec boil.ContextExecutor, iD int, selectCol
 
 	q := queries.Raw(query, iD)
 
-	err := q.Bind(ctx, exec, diaryObj)
+	err := q.Bind(nil, exec, diaryObj)
 	if err != nil {
 		if errors.Cause(err) == sql.ErrNoRows {
 			return nil, sql.ErrNoRows
@@ -666,24 +628,22 @@ func FindDiary(ctx context.Context, exec boil.ContextExecutor, iD int, selectCol
 
 // Insert a single record using an executor.
 // See boil.Columns.InsertColumnSet documentation to understand column list inference for inserts.
-func (o *Diary) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
+func (o *Diary) Insert(exec boil.Executor, columns boil.Columns) error {
 	if o == nil {
 		return errors.New("model: no diary provided for insertion")
 	}
 
 	var err error
-	if !boil.TimestampsAreSkipped(ctx) {
-		currTime := time.Now().In(boil.GetLocation())
+	currTime := time.Now().In(boil.GetLocation())
 
-		if queries.MustTime(o.CreatedAt).IsZero() {
-			queries.SetScanner(&o.CreatedAt, currTime)
-		}
-		if queries.MustTime(o.UpdatedAt).IsZero() {
-			queries.SetScanner(&o.UpdatedAt, currTime)
-		}
+	if queries.MustTime(o.CreatedAt).IsZero() {
+		queries.SetScanner(&o.CreatedAt, currTime)
+	}
+	if queries.MustTime(o.UpdatedAt).IsZero() {
+		queries.SetScanner(&o.UpdatedAt, currTime)
 	}
 
-	if err := o.doBeforeInsertHooks(ctx, exec); err != nil {
+	if err := o.doBeforeInsertHooks(exec); err != nil {
 		return err
 	}
 
@@ -728,16 +688,15 @@ func (o *Diary) Insert(ctx context.Context, exec boil.ContextExecutor, columns b
 	value := reflect.Indirect(reflect.ValueOf(o))
 	vals := queries.ValuesFromMapping(value, cache.valueMapping)
 
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, cache.query)
-		fmt.Fprintln(writer, vals)
+	if boil.DebugMode {
+		fmt.Fprintln(boil.DebugWriter, cache.query)
+		fmt.Fprintln(boil.DebugWriter, vals)
 	}
 
 	if len(cache.retMapping) != 0 {
-		err = exec.QueryRowContext(ctx, cache.query, vals...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
+		err = exec.QueryRow(cache.query, vals...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
 	} else {
-		_, err = exec.ExecContext(ctx, cache.query, vals...)
+		_, err = exec.Exec(cache.query, vals...)
 	}
 
 	if err != nil {
@@ -750,21 +709,19 @@ func (o *Diary) Insert(ctx context.Context, exec boil.ContextExecutor, columns b
 		diaryInsertCacheMut.Unlock()
 	}
 
-	return o.doAfterInsertHooks(ctx, exec)
+	return o.doAfterInsertHooks(exec)
 }
 
 // Update uses an executor to update the Diary.
 // See boil.Columns.UpdateColumnSet documentation to understand column list inference for updates.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
-func (o *Diary) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
-	if !boil.TimestampsAreSkipped(ctx) {
-		currTime := time.Now().In(boil.GetLocation())
+func (o *Diary) Update(exec boil.Executor, columns boil.Columns) (int64, error) {
+	currTime := time.Now().In(boil.GetLocation())
 
-		queries.SetScanner(&o.UpdatedAt, currTime)
-	}
+	queries.SetScanner(&o.UpdatedAt, currTime)
 
 	var err error
-	if err = o.doBeforeUpdateHooks(ctx, exec); err != nil {
+	if err = o.doBeforeUpdateHooks(exec); err != nil {
 		return 0, err
 	}
 	key := makeCacheKey(columns, nil)
@@ -797,13 +754,12 @@ func (o *Diary) Update(ctx context.Context, exec boil.ContextExecutor, columns b
 
 	values := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), cache.valueMapping)
 
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, cache.query)
-		fmt.Fprintln(writer, values)
+	if boil.DebugMode {
+		fmt.Fprintln(boil.DebugWriter, cache.query)
+		fmt.Fprintln(boil.DebugWriter, values)
 	}
 	var result sql.Result
-	result, err = exec.ExecContext(ctx, cache.query, values...)
+	result, err = exec.Exec(cache.query, values...)
 	if err != nil {
 		return 0, errors.Wrap(err, "model: unable to update diary row")
 	}
@@ -819,14 +775,14 @@ func (o *Diary) Update(ctx context.Context, exec boil.ContextExecutor, columns b
 		diaryUpdateCacheMut.Unlock()
 	}
 
-	return rowsAff, o.doAfterUpdateHooks(ctx, exec)
+	return rowsAff, o.doAfterUpdateHooks(exec)
 }
 
 // UpdateAll updates all rows with the specified column values.
-func (q diaryQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (q diaryQuery) UpdateAll(exec boil.Executor, cols M) (int64, error) {
 	queries.SetUpdate(q.Query, cols)
 
-	result, err := q.Query.ExecContext(ctx, exec)
+	result, err := q.Query.Exec(exec)
 	if err != nil {
 		return 0, errors.Wrap(err, "model: unable to update all for diary")
 	}
@@ -840,7 +796,7 @@ func (q diaryQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, co
 }
 
 // UpdateAll updates all rows with the specified column values, using an executor.
-func (o DiarySlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (o DiarySlice) UpdateAll(exec boil.Executor, cols M) (int64, error) {
 	ln := int64(len(o))
 	if ln == 0 {
 		return 0, nil
@@ -870,12 +826,11 @@ func (o DiarySlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, co
 		strmangle.SetParamNames("\"", "\"", 1, colNames),
 		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), len(colNames)+1, diaryPrimaryKeyColumns, len(o)))
 
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, args...)
+	if boil.DebugMode {
+		fmt.Fprintln(boil.DebugWriter, sql)
+		fmt.Fprintln(boil.DebugWriter, args...)
 	}
-	result, err := exec.ExecContext(ctx, sql, args...)
+	result, err := exec.Exec(sql, args...)
 	if err != nil {
 		return 0, errors.Wrap(err, "model: unable to update all in diary slice")
 	}
@@ -889,20 +844,18 @@ func (o DiarySlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, co
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *Diary) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
+func (o *Diary) Upsert(exec boil.Executor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
 		return errors.New("model: no diary provided for upsert")
 	}
-	if !boil.TimestampsAreSkipped(ctx) {
-		currTime := time.Now().In(boil.GetLocation())
+	currTime := time.Now().In(boil.GetLocation())
 
-		if queries.MustTime(o.CreatedAt).IsZero() {
-			queries.SetScanner(&o.CreatedAt, currTime)
-		}
-		queries.SetScanner(&o.UpdatedAt, currTime)
+	if queries.MustTime(o.CreatedAt).IsZero() {
+		queries.SetScanner(&o.CreatedAt, currTime)
 	}
+	queries.SetScanner(&o.UpdatedAt, currTime)
 
-	if err := o.doBeforeUpsertHooks(ctx, exec); err != nil {
+	if err := o.doBeforeUpsertHooks(exec); err != nil {
 		return err
 	}
 
@@ -984,18 +937,17 @@ func (o *Diary) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnC
 		returns = queries.PtrsFromMapping(value, cache.retMapping)
 	}
 
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, cache.query)
-		fmt.Fprintln(writer, vals)
+	if boil.DebugMode {
+		fmt.Fprintln(boil.DebugWriter, cache.query)
+		fmt.Fprintln(boil.DebugWriter, vals)
 	}
 	if len(cache.retMapping) != 0 {
-		err = exec.QueryRowContext(ctx, cache.query, vals...).Scan(returns...)
+		err = exec.QueryRow(cache.query, vals...).Scan(returns...)
 		if err == sql.ErrNoRows {
 			err = nil // Postgres doesn't return anything when there's no update
 		}
 	} else {
-		_, err = exec.ExecContext(ctx, cache.query, vals...)
+		_, err = exec.Exec(cache.query, vals...)
 	}
 	if err != nil {
 		return errors.Wrap(err, "model: unable to upsert diary")
@@ -1007,29 +959,28 @@ func (o *Diary) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnC
 		diaryUpsertCacheMut.Unlock()
 	}
 
-	return o.doAfterUpsertHooks(ctx, exec)
+	return o.doAfterUpsertHooks(exec)
 }
 
 // Delete deletes a single Diary record with an executor.
 // Delete will match against the primary key column to find the record to delete.
-func (o *Diary) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o *Diary) Delete(exec boil.Executor) (int64, error) {
 	if o == nil {
 		return 0, errors.New("model: no Diary provided for delete")
 	}
 
-	if err := o.doBeforeDeleteHooks(ctx, exec); err != nil {
+	if err := o.doBeforeDeleteHooks(exec); err != nil {
 		return 0, err
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), diaryPrimaryKeyMapping)
 	sql := "DELETE FROM \"diary\" WHERE \"id\"=$1"
 
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, args...)
+	if boil.DebugMode {
+		fmt.Fprintln(boil.DebugWriter, sql)
+		fmt.Fprintln(boil.DebugWriter, args...)
 	}
-	result, err := exec.ExecContext(ctx, sql, args...)
+	result, err := exec.Exec(sql, args...)
 	if err != nil {
 		return 0, errors.Wrap(err, "model: unable to delete from diary")
 	}
@@ -1039,7 +990,7 @@ func (o *Diary) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, e
 		return 0, errors.Wrap(err, "model: failed to get rows affected by delete for diary")
 	}
 
-	if err := o.doAfterDeleteHooks(ctx, exec); err != nil {
+	if err := o.doAfterDeleteHooks(exec); err != nil {
 		return 0, err
 	}
 
@@ -1047,14 +998,14 @@ func (o *Diary) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, e
 }
 
 // DeleteAll deletes all matching rows.
-func (q diaryQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (q diaryQuery) DeleteAll(exec boil.Executor) (int64, error) {
 	if q.Query == nil {
 		return 0, errors.New("model: no diaryQuery provided for delete all")
 	}
 
 	queries.SetDelete(q.Query)
 
-	result, err := q.Query.ExecContext(ctx, exec)
+	result, err := q.Query.Exec(exec)
 	if err != nil {
 		return 0, errors.Wrap(err, "model: unable to delete all from diary")
 	}
@@ -1068,14 +1019,14 @@ func (q diaryQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (i
 }
 
 // DeleteAll deletes all rows in the slice, using an executor.
-func (o DiarySlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o DiarySlice) DeleteAll(exec boil.Executor) (int64, error) {
 	if len(o) == 0 {
 		return 0, nil
 	}
 
 	if len(diaryBeforeDeleteHooks) != 0 {
 		for _, obj := range o {
-			if err := obj.doBeforeDeleteHooks(ctx, exec); err != nil {
+			if err := obj.doBeforeDeleteHooks(exec); err != nil {
 				return 0, err
 			}
 		}
@@ -1090,12 +1041,11 @@ func (o DiarySlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (i
 	sql := "DELETE FROM \"diary\" WHERE " +
 		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, diaryPrimaryKeyColumns, len(o))
 
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, args)
+	if boil.DebugMode {
+		fmt.Fprintln(boil.DebugWriter, sql)
+		fmt.Fprintln(boil.DebugWriter, args)
 	}
-	result, err := exec.ExecContext(ctx, sql, args...)
+	result, err := exec.Exec(sql, args...)
 	if err != nil {
 		return 0, errors.Wrap(err, "model: unable to delete all from diary slice")
 	}
@@ -1107,7 +1057,7 @@ func (o DiarySlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (i
 
 	if len(diaryAfterDeleteHooks) != 0 {
 		for _, obj := range o {
-			if err := obj.doAfterDeleteHooks(ctx, exec); err != nil {
+			if err := obj.doAfterDeleteHooks(exec); err != nil {
 				return 0, err
 			}
 		}
@@ -1118,8 +1068,8 @@ func (o DiarySlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (i
 
 // Reload refetches the object from the database
 // using the primary keys with an executor.
-func (o *Diary) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindDiary(ctx, exec, o.ID)
+func (o *Diary) Reload(exec boil.Executor) error {
+	ret, err := FindDiary(exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -1130,7 +1080,7 @@ func (o *Diary) Reload(ctx context.Context, exec boil.ContextExecutor) error {
 
 // ReloadAll refetches every row with matching primary key column values
 // and overwrites the original object slice with the newly updated slice.
-func (o *DiarySlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
+func (o *DiarySlice) ReloadAll(exec boil.Executor) error {
 	if o == nil || len(*o) == 0 {
 		return nil
 	}
@@ -1147,7 +1097,7 @@ func (o *DiarySlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) e
 
 	q := queries.Raw(sql, args...)
 
-	err := q.Bind(ctx, exec, &slice)
+	err := q.Bind(nil, exec, &slice)
 	if err != nil {
 		return errors.Wrap(err, "model: unable to reload all in DiarySlice")
 	}
@@ -1158,16 +1108,15 @@ func (o *DiarySlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) e
 }
 
 // DiaryExists checks if the Diary row exists.
-func DiaryExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool, error) {
+func DiaryExists(exec boil.Executor, iD int) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"diary\" where \"id\"=$1 limit 1)"
 
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, iD)
+	if boil.DebugMode {
+		fmt.Fprintln(boil.DebugWriter, sql)
+		fmt.Fprintln(boil.DebugWriter, iD)
 	}
-	row := exec.QueryRowContext(ctx, sql, iD)
+	row := exec.QueryRow(sql, iD)
 
 	err := row.Scan(&exists)
 	if err != nil {

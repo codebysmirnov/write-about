@@ -1,24 +1,27 @@
 package diary
 
 import (
+	"database/sql"
 	"encoding/json"
 	"github.com/codebysmirnov/write-about/app/middleware/auth"
 	"github.com/codebysmirnov/write-about/app/model"
 	"github.com/codebysmirnov/write-about/app/utils"
+	"github.com/volatiletech/null"
+	"github.com/volatiletech/sqlboiler/boil"
+	"github.com/volatiletech/sqlboiler/queries/qm"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 )
 
 // Diary struct
 type Diary struct {
-	db *gorm.DB
+	db *sql.DB
 }
 
 // New diary module
-func New(db *gorm.DB) *Diary {
+func New(db *sql.DB) *Diary {
 	if db == nil {
 		panic("failed to initialize Auth controller: db parameter is nil-pointer")
 	}
@@ -46,18 +49,18 @@ func (d *Diary) CreateDiary(w http.ResponseWriter, r *http.Request) {
 
 	userId := userMeta["user_id"]
 
-	user := model.User{}
-	if err := d.db.Where("id = ?", userId).First(&user).Error; err != nil {
+	user, err := model.Users(qm.Where("id = ?", userId)).One(d.db)
+	if err != nil {
 		utils.RespondError(w, http.StatusNotFound, err.Error())
 		return
 	}
 
 	newDiary := &model.Diary{
 		Year:   in.Year,
-		UserID: user.ID,
+		UserID: null.IntFrom(user.ID),
 	}
 
-	if err := d.db.Save(&newDiary).Error; err != nil {
+	if err := newDiary.Insert(d.db, boil.Infer()); err != nil {
 		utils.RespondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -66,8 +69,8 @@ func (d *Diary) CreateDiary(w http.ResponseWriter, r *http.Request) {
 }
 
 type ListItem struct {
-	ID   uint `json:"id"`
-	Year int  `json:"year"`
+	ID   int `json:"id"`
+	Year int `json:"year"`
 }
 
 type getDiaryResponse struct {
@@ -79,14 +82,13 @@ func (d *Diary) GetDiary(w http.ResponseWriter, r *http.Request) {
 	var userMeta = r.Context().Value("user").(auth.Meta)
 	year, _ := strconv.Atoi(r.FormValue("year"))
 
-	query := d.db.Where("user_id = ?", userMeta["user_id"])
+	query := []qm.QueryMod{qm.Where("user_id = ?", userMeta["user_id"])}
 	if year > 0 {
-		query = query.Where("year = ?", year)
+		query = append(query, model.DiaryWhere.Year.EQ(year))
 	}
 
-	var diaries []model.Diary
-
-	if err := query.Find(&diaries).Error; err != nil {
+	diaries, err := model.Diaries(query...).All(d.db)
+	if err != nil {
 		utils.RespondError(w, http.StatusNotFound, err.Error())
 		return
 	}
