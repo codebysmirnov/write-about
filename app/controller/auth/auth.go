@@ -63,7 +63,7 @@ func (a *Auth) Registration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.ResponseJSON(w, http.StatusCreated, newUser)
+	utils.ResponseJSON(w, http.StatusCreated, utils.Empty{})
 }
 
 type loginResponse struct {

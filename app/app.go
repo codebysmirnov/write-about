@@ -106,6 +106,6 @@ func (a *App) Run() {
 	h := c.Handler(a.Router)
 
 	if err := http.ListenAndServe(a.addr, h); err != nil {
-		logger.Fatalf("Server crash: %s", err.Error())
+		panic("Server crash: " + err.Error())
 	}
 }
