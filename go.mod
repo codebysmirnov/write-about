@@ -3,7 +3,7 @@ module github.com/codebysmirnov/write-about
 go 1.13
 
 require (
-	github.com/Delisa-sama/logger v1.2.1
+	github.com/Delisa-sama/logger v1.3.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/friendsofgo/errors v0.9.2
 	github.com/fsnotify/fsnotify v1.4.9 // indirect

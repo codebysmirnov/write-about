@@ -2,16 +2,18 @@ package config
 
 import (
 	"fmt"
+	"github.com/Delisa-sama/logger"
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
 // Config structure
 type Config struct {
 	DB         DBConfig
-	LogPath    string `env:"LOG_PATH" env-description:"Path to log file. If putted filename only, log file will be created in the same directory as the binary" env-default:"app.log"`
-	Host       string `env:"APP_HOST" env-description:"Address or addr-pattern what will listen to the application" env-default:""`
-	Port       string `env:"APP_PORT" env-description:"Application port" env-default:"8080"`
-	SigningKey string `env:"SUPER_KEY" env-description:"Secret key to generate JWT Authorization tokens" env-required:"true"`
+	LogPath    string          `env:"LOG_PATH" env-description:"Path to log file. If putted filename only, log file will be created in the same directory as the binary" env-default:"app.log"`
+	LogLevel   logger.LogLevel `env:"LOG_LEVEL" env-description:"Logging level [FATAL, ERROR, WARN, DEBUG, INFO, STASH]" env-default:"WARN"`
+	Host       string          `env:"APP_HOST" env-description:"Address or addr-pattern what will listen to the application" env-default:""`
+	Port       string          `env:"APP_PORT" env-description:"Application port" env-default:"8080"`
+	SigningKey string          `env:"SUPER_KEY" env-description:"Secret key to generate JWT Authorization tokens" env-required:"true"`
 }
 
 // DBConfig contain main fields for connect to DB

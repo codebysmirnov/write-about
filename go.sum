@@ -16,6 +16,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/Delisa-sama/logger v1.2.1 h1:im2dAKLSxoCBjngrR64zwpPcu/Rfkfn/QewJumG6YS0=
 github.com/Delisa-sama/logger v1.2.1/go.mod h1:7ZIywjIx0ktYUkX4pkuCMzwKUGrjfOOG35BHm38BrbY=
+github.com/Delisa-sama/logger v1.3.0 h1:Tb9oE94jJYQNppkngjGwDmu+IqPaS4+IK1I8zcjraMc=
+github.com/Delisa-sama/logger v1.3.0/go.mod h1:7ZIywjIx0ktYUkX4pkuCMzwKUGrjfOOG35BHm38BrbY=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
