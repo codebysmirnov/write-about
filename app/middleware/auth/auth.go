@@ -11,3 +11,5 @@ type Auth interface {
 
 // Context metadata
 type Meta map[string]interface{}
+
+const KeyUserMeta = "user"

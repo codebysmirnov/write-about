@@ -20,7 +20,6 @@ type JWT struct {
 
 const (
 	keyTokenExpire = "expire"
-	keyUserMeta    = "user"
 )
 
 // Default token expire time is 30 minutes
@@ -56,7 +55,7 @@ func (j *JWT) Middleware(handler http.Handler) http.Handler {
 			}
 
 			if token.Valid {
-				ctx := context.WithValue(r.Context(), keyUserMeta, auth.Meta(claims))
+				ctx := context.WithValue(r.Context(), auth.KeyUserMeta, auth.Meta(claims))
 				handler.ServeHTTP(w, r.WithContext(ctx))
 			}
 		} else {
