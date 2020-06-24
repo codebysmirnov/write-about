@@ -3,8 +3,6 @@ package main
 import (
 	"github.com/codebysmirnov/write-about/app"
 	"github.com/codebysmirnov/write-about/config"
-
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func main() {
