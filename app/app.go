@@ -37,7 +37,7 @@ func (a *App) Initialize(config *config.Config) {
 
 	logger.Init(
 		logger.Output(logFile),
-		logger.Level(logger.INFO), // TODO: get log-level from config
+		logger.Level(config.LogLevel),
 	)
 
 	cfgString, _ := json.Marshal(config)
